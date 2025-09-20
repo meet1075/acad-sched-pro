@@ -20,7 +20,7 @@ export const SemesterForm = ({ data, onUpdate }: SemesterFormProps) => {
 
   useEffect(() => {
     onUpdate(formData);
-  }, [formData, onUpdate]);
+  }, [formData]);
 
   const handleChange = (field: string, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }));
