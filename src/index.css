@@ -2,41 +2,69 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
-All colors MUST be HSL.
-*/
+/* Academic Timetable Generator Design System */
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    /* Base colors - Academic theme */
+    --background: 240 10% 98%;
+    --foreground: 240 20% 15%;
 
+    /* Card system */
     --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    --card-foreground: 240 20% 15%;
 
+    /* Popover system */
     --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
+    --popover-foreground: 240 20% 15%;
 
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
+    /* Primary - Academic Blue */
+    --primary: 220 90% 55%;
+    --primary-foreground: 0 0% 100%;
+    --primary-hover: 220 90% 50%;
 
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
+    /* Secondary - Soft Gray */
+    --secondary: 240 5% 96%;
+    --secondary-foreground: 240 20% 15%;
 
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    /* Muted colors */
+    --muted: 240 5% 94%;
+    --muted-foreground: 240 10% 45%;
 
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
+    /* Accent - Success Green */
+    --accent: 140 60% 50%;
+    --accent-foreground: 0 0% 100%;
 
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
+    /* Academic variants */
+    --academic: 215 80% 45%;
+    --academic-foreground: 0 0% 100%;
+    --academic-light: 215 60% 95%;
 
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
+    /* Status colors */
+    --success: 140 60% 50%;
+    --success-foreground: 0 0% 100%;
+    --warning: 40 95% 55%;
+    --warning-foreground: 0 0% 100%;
+    --destructive: 0 75% 55%;
+    --destructive-foreground: 0 0% 100%;
 
-    --radius: 0.5rem;
+    /* Borders and inputs */
+    --border: 240 10% 88%;
+    --input: 240 10% 88%;
+    --ring: 220 90% 55%;
+
+    /* Gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(220 90% 55%), hsl(215 80% 45%));
+    --gradient-subtle: linear-gradient(180deg, hsl(240 10% 98%), hsl(240 5% 96%));
+    --gradient-card: linear-gradient(145deg, hsl(0 0% 100%), hsl(240 5% 98%));
+
+    /* Shadows */
+    --shadow-card: 0 4px 12px hsl(240 20% 15% / 0.08);
+    --shadow-elevated: 0 8px 25px hsl(240 20% 15% / 0.12);
+    --shadow-form: 0 2px 8px hsl(240 20% 15% / 0.06);
+
+    /* Spacing and radius */
+    --radius: 0.75rem;
 
     --sidebar-background: 0 0% 98%;
 
