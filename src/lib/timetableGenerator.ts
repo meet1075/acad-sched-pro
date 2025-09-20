@@ -67,7 +67,7 @@ export const generateTimetable = async (data: TimetableData): Promise<any> => {
       facultyWorkload[f.id] = 0;
     });
 
-    // Assign subjects to time slots
+    // Assign subjects to time slots with better distribution
     subjects.forEach(subject => {
       const subjectFaculty = faculty.filter(f => f.subjects.includes(subject.id));
       
@@ -77,57 +77,61 @@ export const generateTimetable = async (data: TimetableData): Promise<any> => {
       let hoursAssigned = 0;
       const targetHours = subject.hoursPerWeek;
 
-      for (let attempt = 0; attempt < targetHours && hoursAssigned < targetHours; attempt++) {
-        // Find available slot
-        let assigned = false;
-
-        for (const day of workingDays) {
-          if (assigned) break;
-
-          for (let slotIndex = 0; slotIndex < Math.min(timeSlots.length, maxClassesPerDay); slotIndex++) {
-            if (schedule[day][slotIndex] !== null) continue;
-
-            // Find available faculty
-            const availableFaculty = subjectFaculty.find(f => 
-              f.availableDays.includes(day) &&
-              facultyWorkload[f.id] < f.maxHoursPerWeek
-            );
-
-            if (!availableFaculty) continue;
-
-            // Find available room
-            const slotKey = `${day}-${slotIndex}`;
-            const availableRoom = allRooms.find(room => {
-              // Check room type compatibility
-              const isCompatible = subject.type === 'Lab' ? 
-                room.type.includes('Lab') : 
-                true; // Theory subjects can use any room
-
-              return isCompatible && 
-                     !globalRoomUsage[room.id].has(slotKey) &&
-                     room.capacity >= classData.strength;
-            });
-
-            if (!availableRoom) continue;
-
-            // Assign the session
-            schedule[day][slotIndex] = {
-              subject: subject.name,
-              subjectCode: subject.code,
-              faculty: availableFaculty.name,
-              room: availableRoom.name,
-              type: subject.type,
-              classId: classData.id
-            };
-
-            // Update tracking
-            facultyWorkload[availableFaculty.id]++;
-            globalRoomUsage[availableRoom.id].add(slotKey);
-            hoursAssigned++;
-            assigned = true;
-            break;
-          }
+      // Create a shuffled list of day-slot combinations for better distribution
+      const daySlotCombinations = [];
+      for (const day of workingDays) {
+        for (let slotIndex = 0; slotIndex < Math.min(timeSlots.length, maxClassesPerDay); slotIndex++) {
+          daySlotCombinations.push({ day, slotIndex });
         }
+      }
+      
+      // Shuffle the combinations to avoid clustering in Monday first slots
+      for (let i = daySlotCombinations.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [daySlotCombinations[i], daySlotCombinations[j]] = [daySlotCombinations[j], daySlotCombinations[i]];
+      }
+
+      for (const { day, slotIndex } of daySlotCombinations) {
+        if (hoursAssigned >= targetHours) break;
+        if (schedule[day][slotIndex] !== null) continue;
+
+        // Find available faculty
+        const availableFaculty = subjectFaculty.find(f => 
+          f.availableDays.includes(day) &&
+          facultyWorkload[f.id] < f.maxHoursPerWeek
+        );
+
+        if (!availableFaculty) continue;
+
+        // Find available room
+        const slotKey = `${day}-${slotIndex}`;
+        const availableRoom = allRooms.find(room => {
+          // Check room type compatibility
+          const isCompatible = subject.type === 'Lab' ? 
+            room.type.includes('Lab') : 
+            true; // Theory subjects can use any room
+
+          return isCompatible && 
+                 !globalRoomUsage[room.id].has(slotKey) &&
+                 room.capacity >= classData.strength;
+        });
+
+        if (!availableRoom) continue;
+
+        // Assign the session
+        schedule[day][slotIndex] = {
+          subject: subject.name,
+          subjectCode: subject.code,
+          faculty: availableFaculty.name,
+          room: availableRoom.name,
+          type: subject.type,
+          classId: classData.id
+        };
+
+        // Update tracking
+        facultyWorkload[availableFaculty.id]++;
+        globalRoomUsage[availableRoom.id].add(slotKey);
+        hoursAssigned++;
       }
     });
 

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
@@ -43,9 +43,9 @@ export const TimetableForm = ({ currentStep, setCurrentStep, onTimetableGenerate
     localStorage.setItem('timetable-form-data', JSON.stringify(formData));
   }, [formData]);
 
-  const updateFormData = (stepData: any) => {
+  const updateFormData = useCallback((stepData: any) => {
     setFormData(prev => ({ ...prev, ...stepData }));
-  };
+  }, []);
 
   const handleNext = () => {
     if (currentStep < FORM_STEPS.length - 1) {
